@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 from time import sleep
 from secrets import SystemRandom
 
+
 base_dir = path.dirname(path.abspath(__file__))
 log_dir = path.join(base_dir, 'log')
 
@@ -49,13 +50,13 @@ default_header = {
 
 class HaxBot(object):
     def __init__(self, log_level_file=logging.DEBUG, log_level_stream=logging.INFO):
-        self.logger = logging.getLogger("Hax Bot")
+        self.logger = logging.getLogger("Hits Bot")
         self.logger.setLevel(logging.DEBUG)
 
         if not path.isdir(log_dir):
             mkdir(log_dir)
 
-        log_filename: str = path.join(log_dir, 'hax_bot.log')
+        log_filename: str = path.join(log_dir, 'hits_bot.log')
         fh = logging.FileHandler(filename=log_filename)
         fh.setLevel(log_level_file)
         fh.setFormatter(
@@ -63,30 +64,19 @@ class HaxBot(object):
                 "%(asctime)s - %(name)s (%(module)s %(pathname)s:%(lineno)s) - %(levelname)s - %(message)s"
             )
         )
-        handler_existed = False
-        for handler in self.logger.handlers:
-            if isinstance(handler, logging.FileHandler):
-                handler_existed = True
-                break
-        if not handler_existed:
-            self.logger.addHandler(fh)
+
+        self.logger.addHandler(fh)
 
         ch = logging.StreamHandler()
         ch.setLevel(log_level_stream)
         ch.setFormatter(
             logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
         )
-        handler_existed = False
-        for handler in self.logger.handlers:
-            if isinstance(handler, logging.StreamHandler):
-                handler_existed = True
-                break
-        if not handler_existed:
-            self.logger.addHandler(ch)
+        self.logger.addHandler(ch)
 
         self.session = Session()
         self.session.headers.update(default_header)
-        self.logger.info('------------- Init HaxBot -------------')
+        self.logger.info('------------- Init HitsBot -------------')
 
     def send_request(self, endpoint: str, header: dict = None):
         if header:
