@@ -85,8 +85,6 @@ class HaxBot(object):
         options = webdriver.ChromeOptions()
         options.add_argument(f"user-agent={self.user_agent}")
         options.add_argument("--disable-web-security")
-        options.add_argument('--disable-gpu')
-        options.add_argument('--no-sandbox')
         options.binary_location = GOOGLE_CHROME_PATH
         self.driver = webdriver.Chrome(execution_path=CHROMEDRIVER_PATH, options=options)
         self.driver.header_overrides = default_header
