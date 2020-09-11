@@ -12,6 +12,8 @@ from pyvirtualdisplay import Display
 base_dir = path.dirname(path.abspath(__file__))
 log_dir = path.join(base_dir, 'log')
 driver_path = path.join(base_dir, 'chromedriver')
+GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
+CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
 
 parser = ArgumentParser(description="The URL of the webpage to visit.")
 parser.add_argument('url', nargs='*', metavar='url', type=str, help='URL to visit.', default='test')
@@ -45,11 +47,6 @@ referrer_list = [
 
 random_generator = SystemRandom()
 
-default_header = {
-    'User-Agent': random_generator.choice(u_a_list),
-    'Referer': random_generator.choice(referrer_list)
-}
-
 
 class HaxBot(object):
     def __init__(self, log_level_file=logging.DEBUG, log_level_stream=logging.INFO):
@@ -79,9 +76,19 @@ class HaxBot(object):
 
         self.logger.info('------------- Init HitsBot -------------')
 
-        options = Options()
+        self.user_agent = random_generator.choice(u_a_list)
+        default_header = {
+            'User-Agent': self.user_agent,
+            'Referer': random_generator.choice(referrer_list)
+        }
+
+        options = webdriver.ChromeOptions()
+        options.add_argument(f"user-agent={self.user_agent}")
         options.add_argument("--disable-web-security")
-        self.driver = webdriver.Chrome(executable_path=driver_path, options=options)
+        options.add_argument('--disable-gpu')
+        options.add_argument('--no-sandbox')
+        options.binary_location = GOOGLE_CHROME_PATH
+        self.driver = webdriver.Chrome(execution_path=CHROMEDRIVER_PATH, options=options)
         self.driver.header_overrides = default_header
 
     def send_request(self, endpoint: str) -> None:
